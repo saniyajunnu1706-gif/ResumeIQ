@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume IQ — AI Recruiter</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#07111f;--navy2:#0d1f36;--navy3:#122744;
+  --blue:#2563eb;--blue2:#1d4ed8;--blueglow:#3b82f620;
+  --amber:#f59e0b;--amber2:#d97706;
+  --green:#10b981;--red:#ef4444;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --border:#1e3a5f;--border2:#2d4f7c;
+  --card:#0d1f36;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow:hidden}
+
+.page{display:none;width:100%;height:100vh}
+.page.active{display:flex}
+
+/* AUTH */
+#page-login,#page-signup,#page-forgot{align-items:stretch}
+.auth-left{width:42%;background:var(--navy2);border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;padding:40px;position:relative;overflow:hidden}
+.auth-left-pattern{position:absolute;inset:0;opacity:.04;background-image:repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 1px,transparent 40px),repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 1px,transparent 40px)}
+.auth-brand{position:relative;z-index:1}
+.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px}
+.auth-logo-icon{width:44px;height:44px;background:var(--blue);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.auth-logo-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff}
+.auth-logo-sub{font-size:10px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.auth-tagline{font-size:26px;font-weight:600;color:#fff;line-height:1.4;margin-bottom:14px}
+.auth-sub{font-size:14px;color:var(--text2);line-height:1.8}
+.auth-features{position:relative;z-index:1}
+.auth-feat{display:flex;align-items:center;gap:12px;margin-bottom:16px;font-size:13px;color:var(--text2)}
+.auth-feat-icon{width:30px;height:30px;background:var(--navy3);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background:var(--navy)}
+.auth-box{width:100%;max-width:360px}
+.auth-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:8px}
+.auth-desc{font-size:13px;color:var(--text2);margin-bottom:28px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px}
+.field-wrap{position:relative}
+.field input{width:100%;background:var(--navy2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:11px 38px 11px 14px;outline:none;transition:border .2s}
+.field input:focus{border-color:var(--blue)}
+.field input::placeholder{color:var(--text3)}
+.field-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:15px;cursor:pointer;user-select:none}
+.field-row{display:flex;gap:12px}
+.field-row .field{flex:1}
+.auth-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:4px}
+.auth-btn:hover{background:var(--blue2);transform:translateY(-1px)}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--text3);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.oauth-btn{width:100%;padding:11px;background:var(--navy2);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;margin-bottom:10px}
+.oauth-btn:hover{border-color:var(--border2);color:var(--text)}
+.auth-link{font-size:13px;color:var(--text3);text-align:center;margin-top:20px}
+.auth-link a{color:var(--blue);cursor:pointer}
+.forgot-link{font-size:12px;color:var(--text3);cursor:pointer;float:right}
+.forgot-link:hover{color:var(--blue)}
+.error-msg{background:#1a0505;border:1px solid #7f1d1d;border-radius:6px;padding:9px 14px;font-size:12px;color:#f87171;margin-bottom:14px;display:none}
+.error-msg.show{display:block}
+.success-msg{background:#052e16;border:1px solid #166534;border-radius:6px;padding:9px 14px;font-size:12px;color:#4ade80;margin-bottom:14px;display:none}
+.success-msg.show{display:block}
+.strength-bar{display:flex;gap:4px;margin-top:6px}
+.strength-seg{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+.strength-label{font-size:11px;color:var(--text3);margin-top:5px}
+.remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.remember-check{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer}
+.remember-check input{accent-color:var(--blue);width:14px;height:14px}
+.demo-box{margin-top:22px;padding-top:18px;border-top:1px solid var(--border);text-align:center}
+.demo-label{font-size:11px;color:var(--text3);margin-bottom:8px}
+.demo-cred{font-size:12px;color:var(--text2);margin-bottom:3px}
+.demo-cred span{color:var(--blue)}
+
+/* APP */
+#page-app{flex-direction:row;overflow:hidden;position:relative}
+#sidebar{width:290px;min-width:290px;background:var(--navy2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.logo{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo-left{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff}
+.logo-sub{font-size:10px;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px}
+.user-menu{position:relative}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;cursor:pointer;border:2px solid var(--border2);user-select:none}
+.user-dropdown{position:absolute;top:42px;right:0;background:var(--navy2);border:1px solid var(--border2);border-radius:12px;width:205px;padding:6px;z-index:999;display:none;box-shadow:0 10px 40px #00000090}
+.user-dropdown.open{display:block}
+.ud-header{padding:10px 12px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:600;color:#fff}
+.ud-email{font-size:11px;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .2s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+.ud-item:hover{background:var(--navy3);color:var(--text)}
+.ud-item.danger{color:#f87171}
+.ud-item.danger:hover{background:#1a0505;color:#fca5a5}
+.ud-sep{height:1px;background:var(--border);margin:4px 0}
+.sidebar-section{padding:16px;border-bottom:1px solid var(--border)}
+.sidebar-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:500}
+#jd-input{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:10px;resize:none;height:90px;outline:none;transition:border .2s}
+#jd-input:focus{border-color:var(--blue)}
+#jd-input::placeholder{color:var(--text3)}
+#drop-zone{border:1.5px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;background:var(--navy3)}
+#drop-zone:hover{border-color:var(--blue);background:var(--blueglow)}
+#drop-zone .dz-icon{font-size:22px;margin-bottom:6px}
+#drop-zone .dz-text{font-size:12px;color:var(--text2)}
+#drop-zone .dz-sub{font-size:10px;color:var(--text3);margin-top:3px}
+#file-input{display:none}
+#file-list{padding:0 16px;flex:1;overflow-y:auto}
+.file-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.file-item:last-child{border-bottom:none}
+.file-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.file-dot.done{background:var(--green)}
+.file-dot.loading{background:var(--amber);animation:pulse 1s infinite}
+.file-dot.error{background:var(--red)}
+.file-name{flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-remove{color:var(--text3);cursor:pointer;font-size:14px;flex-shrink:0}
+.file-remove:hover{color:var(--red)}
+#analyze-btn{margin:12px 16px;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:calc(100% - 32px)}
+#analyze-btn:hover{background:var(--blue2)}
+#analyze-btn:disabled{background:var(--navy3);color:var(--text3);cursor:not-allowed}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.topbar-stats{display:flex;gap:24px}
+.stat-item{text-align:center}
+.stat-num{font-size:22px;font-weight:600;color:#fff;font-family:'Playfair Display',serif}
+.stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.stat-item.green .stat-num{color:var(--green)}
+.stat-item.amber .stat-num{color:var(--amber)}
+.stat-item.red .stat-num{color:var(--red)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+#filter-select{background:var(--navy2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px;border-radius:7px;outline:none}
+#select-all-btn{padding:7px 14px;font-size:12px;font-family:'DM Sans',sans-serif;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--navy2);color:var(--text2);transition:all .2s}
+#select-all-btn:hover{border-color:var(--blue);color:var(--blue)}
+#export-btn{padding:7px 14px;font-size:12px;font-family:'DM Sans',sans-serif;border-radius:7px;cursor:pointer;background:var(--amber);border:none;color:#000;font-weight:500}
+#export-btn:hover{background:var(--amber2)}
+#candidates-area{flex:1;overflow-y:auto;padding:18px 22px}
+#candidates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+#empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);gap:10px}
+.empty-icon{font-size:52px;opacity:.25}
+.empty-text{font-size:15px}
+.empty-sub{font-size:13px;opacity:.7}
+.cand-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;animation:fadeIn .3s ease}
+.cand-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 4px 20px #00000040}
+.cand-card.selected{border-color:var(--blue);background:#0a1929}
+.cand-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.cand-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0}
+.cand-info{flex:1;min-width:0}
+.cand-name{font-size:14px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cand-file{font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.cand-check{width:17px;height:17px;flex-shrink:0;accent-color:var(--blue)}
+.rec-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:500;letter-spacing:.5px;margin-bottom:9px}
+.rec-badge.shortlist{background:#052e16;color:#4ade80;border:1px solid #166534}
+.rec-badge.maybe{background:#451a03;color:#fbbf24;border:1px solid #92400e}
+.rec-badge.reject{background:#450a0a;color:#f87171;border:1px solid #7f1d1d}
+.scores{margin-top:6px}
+.score-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.score-label{font-size:10px;color:var(--text3);width:72px;flex-shrink:0}
+.score-bar-wrap{flex:1;height:4px;background:var(--navy3);border-radius:2px;overflow:hidden}
+.score-bar{height:100%;border-radius:2px;transition:width .7s ease}
+.score-val{font-size:10px;color:var(--text2);width:26px;text-align:right;flex-shrink:0}
+.cand-detail{margin-top:10px;border-top:1px solid var(--border);padding-top:10px;display:none}
+.cand-card.expanded .cand-detail{display:block}
+.detail-title{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;margin-top:8px}
+.detail-title:first-child{margin-top:0}
+.detail-text{font-size:11px;color:var(--text2);line-height:1.7}
+.detail-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--border)}
+.tag.strength{border-color:#166534;color:#4ade80;background:#052e16}
+.tag.gap{border-color:#7f1d1d;color:#f87171;background:#450a0a}
+.skeleton{background:linear-gradient(90deg,var(--navy3) 25%,var(--navy2) 50%,var(--navy3) 75%);background-size:200%;animation:shimmer 1.5s infinite;border-radius:4px}
+.skel-name{height:14px;width:70%;margin-bottom:6px}
+.skel-badge{height:22px;width:50%;margin-bottom:10px}
+.skel-bar{height:4px;margin-bottom:7px;width:100%}
+#sel-bar{padding:10px 22px;background:#0a1929;border-top:1px solid var(--blue);display:none;align-items:center;justify-content:space-between}
+#sel-bar.visible{display:flex}
+.sel-count{font-size:13px;color:var(--blue)}
+.sel-actions{display:flex;gap:8px}
+.sel-btn{padding:7px 16px;font-size:12px;font-family:'DM Sans',sans-serif;border-radius:7px;cursor:pointer;border:none;font-weight:500;transition:all .2s}
+.sel-btn.primary{background:var(--blue);color:#fff}
+.sel-btn.secondary{background:var(--navy3);color:var(--text2);border:1px solid var(--border)}
+
+/* MODALS */
+.modal-overlay{display:none;position:absolute;inset:0;background:#000000cc;z-index:500;align-items:center;justify-content:center}
+.modal-overlay.visible{display:flex}
+.modal-box{background:var(--navy2);border:1px solid var(--border2);border-radius:16px;padding:28px;width:430px;max-width:92%;box-shadow:0 20px 60px #00000090;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;color:#fff}
+.modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:6px}
+.modal-close:hover{color:var(--text);background:var(--navy3)}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px}
+.modal-input{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 12px;outline:none;transition:border .2s}
+.modal-input:focus{border-color:var(--blue)}
+.modal-input::placeholder{color:var(--text3)}
+.modal-btns{display:flex;gap:10px;margin-top:20px}
+.modal-btn{flex:1;padding:11px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+.modal-btn.primary{background:var(--blue);color:#fff}
+.modal-btn.primary:hover{background:var(--blue2)}
+.modal-btn.secondary{background:var(--navy3);color:var(--text2);border:1px solid var(--border)}
+.modal-btn.secondary:hover{color:var(--text)}
+.modal-note{font-size:11px;color:var(--text3);margin-top:14px;line-height:1.7}
+.modal-note a{color:var(--blue);text-decoration:none}
+.modal-success{background:#052e16;border:1px solid #166534;border-radius:6px;padding:9px 12px;font-size:12px;color:#4ade80;margin-bottom:14px;display:none}
+.modal-success.show{display:block}
+.plan-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:500;background:#1e3a5f;color:#60a5fa;border:1px solid var(--border2);margin-bottom:18px}
+.plan-feature{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);margin-bottom:11px}
+.plan-feature .check{color:var(--green);font-size:15px;flex-shrink:0}
+.plan-feature .cross{color:var(--text3);font-size:15px;flex-shrink:0}
+.upgrade-box{background:var(--navy3);border:1px solid var(--border2);border-radius:10px;padding:16px;margin:18px 0}
+.team-member{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.team-member:last-child{border-bottom:none}
+.team-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0}
+.team-info{flex:1}
+.team-name{font-size:13px;color:var(--text);font-weight:500}
+.team-role{font-size:11px;color:var(--text3);margin-top:1px}
+.team-badge{font-size:10px;padding:3px 10px;border-radius:10px;background:var(--navy3);color:var(--text2);border:1px solid var(--border);white-space:nowrap}
+.invite-row{display:flex;gap:8px;margin-top:4px}
+
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.page.active{animation:slideIn .25s ease}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="page-login" class="page active">
+  <div class="auth-left">
+    <div class="auth-left-pattern"></div>
+    <div class="auth-brand">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🧠</div>
+        <div><div class="auth-logo-name">Resume IQ</div><div class="auth-logo-sub">AI Recruiter</div></div>
+      </div>
+      <div class="auth-tagline">Hire smarter with AI-powered resume analysis</div>
+      <div class="auth-sub">Screen dozens of candidates in minutes. Let AI rank, score, and shortlist — so you focus only on the best fits.</div>
+    </div>
+    <div class="auth-features">
+      <div class="auth-feat"><div class="auth-feat-icon">⚡</div>Analyze 50+ resumes simultaneously</div>
+      <div class="auth-feat"><div class="auth-feat-icon">🎯</div>AI scoring matched to your job description</div>
+      <div class="auth-feat"><div class="auth-feat-icon">📊</div>Side-by-side candidate comparison</div>
+      <div class="auth-feat"><div class="auth-feat-icon">📤</div>One-click CSV export &amp; shortlisting</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-desc">Sign in to your recruiter account</div>
+      <div class="error-msg" id="login-error">Invalid email or password. Please try again.</div>
+      <div class="oauth-btn" onclick="oauthLogin('Google')">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </div>
+      <div class="oauth-btn" onclick="oauthLogin('Microsoft')">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#00a4ef" d="M13 1h10v10H13z"/><path fill="#7fba00" d="M1 13h10v10H1z"/><path fill="#ffb900" d="M13 13h10v10H13z"/></svg>
+        Continue with Microsoft
+      </div>
+      <div class="auth-divider">or sign in with email</div>
+      <div class="field">
+        <label>Email address</label>
+        <div class="field-wrap"><input type="email" id="login-email" placeholder="you@company.com" onkeydown="if(event.key==='Enter')doLogin()"><span class="field-icon">✉</span></div>
+      </div>
+      <div class="field">
+        <label>Password <span class="forgot-link" onclick="showPage('page-forgot')">Forgot password?</span></label>
+        <div class="field-wrap"><input type="password" id="login-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"><span class="field-icon" onclick="togglePass('login-pass')">👁</span></div>
+      </div>
+      <div class="remember-row"><label class="remember-check"><input type="checkbox" checked> Keep me signed in</label></div>
+      <button class="auth-btn" onclick="doLogin()">Sign in</button>
+      <div class="auth-link">Don't have an account? <a onclick="showPage('page-signup')">Create one free</a></div>
+      <div class="demo-box">
+        <div class="demo-label">Demo credentials</div>
+        <div class="demo-cred">Email: <span>resumeiq@company.com</span></div>
+        <div class="demo-cred">Password: <span>demo1234</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP -->
+<div id="page-signup" class="page">
+  <div class="auth-left">
+    <div class="auth-left-pattern"></div>
+    <div class="auth-brand">
+      <div class="auth-logo"><div class="auth-logo-icon">🧠</div><div><div class="auth-logo-name">Resume IQ</div><div class="auth-logo-sub">AI Recruiter</div></div></div>
+      <div class="auth-tagline">Start hiring smarter today</div>
+      <div class="auth-sub">Join 2,000+ recruiters using Resume IQ to find the best candidates faster than ever.</div>
+    </div>
+    <div class="auth-features">
+      <div class="auth-feat"><div class="auth-feat-icon">🆓</div>Free plan — 10 resumes/month</div>
+      <div class="auth-feat"><div class="auth-feat-icon">🔒</div>SOC 2 compliant &amp; GDPR ready</div>
+      <div class="auth-feat"><div class="auth-feat-icon">🚀</div>Up and running in 2 minutes</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="auth-title">Create your account</div>
+      <div class="auth-desc">Start analyzing resumes for free</div>
+      <div class="error-msg" id="signup-error">Please fill in all required fields.</div>
+      <div class="oauth-btn" onclick="oauthLogin('Google')">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Sign up with Google
+      </div>
+      <div class="auth-divider">or register with email</div>
+      <div class="field-row">
+        <div class="field"><label>First name</label><div class="field-wrap"><input type="text" id="su-first" placeholder="Jane"></div></div>
+        <div class="field"><label>Last name</label><div class="field-wrap"><input type="text" id="su-last" placeholder="Smith"></div></div>
+      </div>
+      <div class="field"><label>Work email</label><div class="field-wrap"><input type="email" id="su-email" placeholder="jane@company.com"><span class="field-icon">✉</span></div></div>
+      <div class="field"><label>Company</label><div class="field-wrap"><input type="text" id="su-company" placeholder="Acme Corp"></div></div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-wrap"><input type="password" id="su-pass" placeholder="Min. 8 characters" oninput="checkStrength(this.value)" onkeydown="if(event.key==='Enter')doSignup()"><span class="field-icon" onclick="togglePass('su-pass')">👁</span></div>
+        <div class="strength-bar"><div class="strength-seg" id="s1"></div><div class="strength-seg" id="s2"></div><div class="strength-seg" id="s3"></div><div class="strength-seg" id="s4"></div></div>
+        <div class="strength-label" id="strength-label">Enter a password</div>
+      </div>
+      <button class="auth-btn" onclick="doSignup()">Create account</button>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">By signing up you agree to our <a href="#" style="color:var(--blue)">Terms</a> &amp; <a href="#" style="color:var(--blue)">Privacy Policy</a></div>
+      <div class="auth-link">Already have an account? <a onclick="showPage('page-login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="page-forgot" class="page">
+  <div class="auth-left">
+    <div class="auth-left-pattern"></div>
+    <div class="auth-brand">
+      <div class="auth-logo"><div class="auth-logo-icon">🧠</div><div><div class="auth-logo-name">Resume IQ</div></div></div>
+      <div class="auth-tagline">Reset your password securely</div>
+      <div class="auth-sub">We'll send a secure link to your work email within 2 minutes.</div>
+    </div>
+    <div class="auth-features">
+      <div class="auth-feat"><div class="auth-feat-icon">🔐</div>Secure reset link via email</div>
+      <div class="auth-feat"><div class="auth-feat-icon">⏱</div>Link expires in 30 minutes</div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div style="font-size:36px;margin-bottom:14px">🔑</div>
+      <div class="auth-title">Forgot password?</div>
+      <div class="auth-desc">Enter your work email and we'll send you a reset link</div>
+      <div class="success-msg" id="forgot-success">✓ Reset link sent! Check your inbox.</div>
+      <div class="field"><label>Work email</label><div class="field-wrap"><input type="email" id="forgot-email" placeholder="you@company.com" onkeydown="if(event.key==='Enter')doForgot()"><span class="field-icon">✉</span></div></div>
+      <button class="auth-btn" onclick="doForgot()">Send reset link</button>
+      <div class="auth-link" style="margin-top:16px"><a onclick="showPage('page-login')">← Back to sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="page-app" class="page">
+  <div id="sidebar">
+    <div class="logo">
+      <div class="logo-left"><div class="logo-icon">🧠</div><div><div class="logo-text">Resume IQ</div><div class="logo-sub">Recruiter</div></div></div>
+      <div class="user-menu">
+        <div class="user-avatar" id="user-avatar-btn" onclick="toggleDropdown()">RI</div>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="ud-header"><div class="ud-name" id="dd-name">Resume IQ</div><div class="ud-email" id="dd-email">resumeiq@company.com</div></div>
+          <button class="ud-item" onclick="openModal('modal-apikey')">🔑 API Key Settings</button>
+          <button class="ud-item" onclick="openModal('modal-account')">⚙️ Account Settings</button>
+          <button class="ud-item" onclick="openModal('modal-billing')">💳 Billing &amp; Plan</button>
+          <button class="ud-item" onclick="openModal('modal-team')">👥 Team Members</button>
+          <div class="ud-sep"></div>
+          <button class="ud-item danger" onclick="doLogout()">⇥ Sign out</button>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Job Description</div>
+      <textarea id="jd-input" placeholder="Paste the job description here… (role, skills, experience required)"></textarea>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Upload Resumes</div>
+      <div id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="dz-icon">📄</div>
+        <div class="dz-text">Drop resumes here or click to upload</div>
+        <div class="dz-sub">PDF, DOC, DOCX, TXT • Multiple files</div>
+      </div>
+      <input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.txt">
+    </div>
+    <div id="file-list"></div>
+    <button id="analyze-btn" disabled onclick="analyzeAll()">Analyze Resumes</button>
+  </div>
+
+  <div id="main">
+    <div id="demo-banner" style="background:#451a03;border-bottom:1px solid #92400e;padding:6px 22px;font-size:12px;color:#fbbf24;display:flex;align-items:center;justify-content:space-between">
+      <span>⚡ Demo Mode — results are simulated. Add API key for real AI analysis.</span>
+      <span onclick="openModal('modal-apikey')" style="cursor:pointer;text-decoration:underline;color:#fb923c">Add API Key →</span>
+    </div>
+  <div id="topbar">
+      <div class="topbar-stats">
+        <div class="stat-item"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total</div></div>
+        <div class="stat-item green"><div class="stat-num" id="stat-shortlist">0</div><div class="stat-label">Shortlist</div></div>
+        <div class="stat-item amber"><div class="stat-num" id="stat-maybe">0</div><div class="stat-label">Maybe</div></div>
+        <div class="stat-item red"><div class="stat-num" id="stat-reject">0</div><div class="stat-label">Reject</div></div>
+      </div>
+      <div class="topbar-right">
+        <select id="filter-select" onchange="renderCandidates()"><option value="all">All Candidates</option><option value="Shortlist">Shortlist</option><option value="Maybe">Maybe</option><option value="Reject">Reject</option></select>
+        <button id="select-all-btn" onclick="selectAllShortlisted()">Select Shortlisted</button>
+        <button id="export-btn" onclick="exportCSV()">Export CSV</button>
+      </div>
+    </div>
+    <div id="candidates-area">
+      <div id="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No resumes uploaded yet</div><div class="empty-sub">Upload resumes and paste a job description to get started</div></div>
+      <div id="candidates-grid" style="display:none"></div>
+    </div>
+    <div id="sel-bar">
+      <span class="sel-count" id="sel-count-text">0 selected</span>
+      <div class="sel-actions">
+        <button class="sel-btn secondary" onclick="clearSelection()">Clear</button>
+        <button class="sel-btn primary" onclick="exportSelected()">Export Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: API KEY -->
+  <div class="modal-overlay" id="modal-apikey">
+    <div class="modal-box">
+      <div class="modal-header"><span class="modal-title">🔑 API Key Settings</span><button class="modal-close" onclick="closeModal('modal-apikey')">✕</button></div>
+      <div class="modal-success" id="apikey-success">✓ API key saved successfully!</div>
+      <div class="modal-field"><label>Anthropic API Key</label><input type="password" class="modal-input" id="api-key-input" placeholder="sk-ant-api03-..."></div>
+      <div class="modal-note">Get your free API key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Your key is stored only in this browser session and is never sent to any server other than Anthropic's.</div>
+      <div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal('modal-apikey')">Cancel</button><button class="modal-btn primary" onclick="saveApiKey()">Save Key</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ACCOUNT SETTINGS -->
+  <div class="modal-overlay" id="modal-account">
+    <div class="modal-box">
+      <div class="modal-header"><span class="modal-title">⚙️ Account Settings</span><button class="modal-close" onclick="closeModal('modal-account')">✕</button></div>
+      <div class="modal-success" id="account-success">✓ Account updated successfully!</div>
+      <div class="modal-field"><label>Full Name</label><input type="text" class="modal-input" id="acc-name" placeholder="Your full name"></div>
+      <div class="modal-field"><label>Email Address</label><input type="email" class="modal-input" id="acc-email" placeholder="you@company.com"></div>
+      <div class="modal-field"><label>Company</label><input type="text" class="modal-input" id="acc-company" placeholder="Your company name"></div>
+      <div class="modal-field"><label>New Password <span style="color:var(--text3);font-weight:400">(leave blank to keep current)</span></label><input type="password" class="modal-input" id="acc-pass" placeholder="Enter new password"></div>
+      <div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal('modal-account')">Cancel</button><button class="modal-btn primary" onclick="saveAccount()">Save Changes</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL: BILLING -->
+  <div class="modal-overlay" id="modal-billing">
+    <div class="modal-box" style="width:700px;max-width:96%;max-height:90vh;overflow-y:auto">
+      <div class="modal-header"><span class="modal-title">💳 Billing &amp; Plan</span><button class="modal-close" onclick="closeModal('modal-billing')">✕</button></div>
+      <div style="text-align:center;margin-bottom:16px">
+        <p style="font-size:13px;color:var(--text2)">Start free. Upgrade when you need more.</p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px">
+          <span id="bl-monthly" style="font-size:12px;color:#fff;font-weight:500">Monthly</span>
+          <div onclick="toggleBilling()" style="width:38px;height:20px;background:var(--blue);border-radius:20px;position:relative;cursor:pointer;flex-shrink:0">
+            <span id="bl-dot" style="position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:20px;transition:left .2s;display:block"></span>
+          </div>
+          <span id="bl-annual" style="font-size:12px;color:var(--text3)">Annual</span>
+          <span style="background:#052e16;color:#4ade80;border:1px solid #166534;font-size:10px;padding:2px 8px;border-radius:10px">Save 20%</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:12px;padding:14px">
+          <div style="font-size:10px;background:var(--navy2);color:var(--text2);border:1px solid var(--border);padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:8px">Current plan</div>
+          <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px">Free</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Perfect for trying out</div>
+          <div style="margin-bottom:12px"><span style="font-size:26px;font-weight:700;color:#fff;font-family:'Playfair Display',serif">$0</span><span style="font-size:11px;color:var(--text3)">/month</span></div>
+          <button disabled style="width:100%;padding:8px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--navy2);border:1px solid var(--border);color:var(--text3);cursor:not-allowed;margin-bottom:12px">Current plan</button>
+          <div style="height:1px;background:var(--border);margin-bottom:10px"></div>
+          <div style="font-size:11px;color:var(--text2);line-height:2">✓ 10 resume analyses/month<br>✓ AI scoring all 4 dimensions<br>✓ Shortlist recommendations<br>✓ CSV export<br>✓ Compare 2 candidates<br>✓ Demo mode<br><span style="color:var(--text3)">✗ Unlimited analyses<br>✗ Team collaboration<br>✗ ATS integration</span></div>
+        </div>
+        <div style="background:var(--navy3);border:2px solid var(--blue);border-radius:12px;padding:14px;position:relative">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:10px;padding:2px 12px;border-radius:10px;white-space:nowrap">Most popular</div>
+          <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px;margin-top:6px">Pro</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">For recruiters &amp; HR teams</div>
+          <div style="margin-bottom:12px"><span id="pro-amt" style="font-size:26px;font-weight:700;color:var(--blue);font-family:'Playfair Display',serif">$29</span><span style="font-size:11px;color:var(--text3)">/month per seat</span></div>
+          <button onclick="alert('Upgrade coming soon! We will notify you at your registered email.')" style="width:100%;padding:8px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--blue);border:none;color:#fff;cursor:pointer;margin-bottom:12px;font-weight:500">Upgrade to Pro →</button>
+          <div style="height:1px;background:var(--border);margin-bottom:10px"></div>
+          <div style="font-size:11px;color:var(--text2);line-height:2">✓ Unlimited resume analyses<br>✓ All Free features<br>✓ Compare up to 4 candidates<br>✓ Priority AI processing<br>✓ Team collaboration 5 seats<br>✓ Bulk email shortlisted<br>✓ API key managed by platform<br>✓ Priority email support<br><span style="color:var(--text3)">✗ ATS integration</span></div>
+        </div>
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:12px;padding:14px">
+          <div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:3px">Enterprise</div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">For large companies</div>
+          <div style="margin-bottom:12px"><span style="font-size:26px;font-weight:700;color:#fff;font-family:'Playfair Display',serif">Custom</span></div>
+          <button onclick="alert('Contact us: resumeiq@company.com')" style="width:100%;padding:8px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--navy2);border:1px solid var(--border2);color:var(--text);cursor:pointer;margin-bottom:12px">Contact sales</button>
+          <div style="height:1px;background:var(--border);margin-bottom:10px"></div>
+          <div style="font-size:11px;color:var(--text2);line-height:2">✓ Everything in Pro<br>✓ Unlimited team seats<br>✓ ATS integration<br>✓ Custom AI scoring<br>✓ Dedicated account manager<br>✓ SSO &amp; advanced security<br>✓ Analytics dashboard<br>✓ 99.9% uptime SLA<br>✓ 24/7 support</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:11px;color:var(--text3);margin-bottom:12px">14-day free trial on Pro. Cancel anytime.</div>
+      <div class="modal-btns"><button class="modal-btn secondary" onclick="closeModal('modal-billing')">Close</button></div>
+    </div>
+  </div>
+    <!-- MODAL: TEAM MEMBERS -->
+  <div class="modal-overlay" id="modal-team">
+    <div class="modal-box">
+      <div class="modal-header"><span class="modal-title">👥 Team Members</span><button class="modal-close" onclick="closeModal('modal-team')">✕</button></div>
+      <div id="team-list">
+        <div class="team-member">
+          <div class="team-avatar" id="team-own-avatar" style="background:var(--blue);color:#fff">RI</div>
+          <div class="team-info"><div class="team-name" id="team-own-name">Resume IQ User</div><div class="team-role" id="team-own-email">resumeiq@company.com</div></div>
+          <span class="team-badge" style="color:#60a5fa;border-color:var(--border2);background:#1e3a5f">Owner</span>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:500">Invite a team member</div>
+        <div class="invite-row">
+          <input type="email" class="modal-input" id="invite-email" placeholder="colleague@company.com" style="flex:1">
+          <button class="modal-btn primary" style="flex:0 0 auto;padding:10px 18px;margin-top:0" onclick="inviteMember()">Invite</button>
+        </div>
+      </div>
+      <div class="modal-note">Team members on the Free plan can view and export results. Upgrade to Pro for full collaboration features.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS=[['#1e3a5f','#60a5fa'],['#1a2e1a','#4ade80'],['#3b1a1a','#f87171'],['#2d1b69','#c084fc'],['#1a2d1a','#34d399'],['#3b2200','#fb923c']];
+let files=[],candidates=[],selectedIds=new Set(),currentUser=null,apiKey='';
+
+const DEMO_USER={email:'resumeiq@company.com',password:'demo1234',name:'Resume IQ User',company:'ResumeIQ',initials:'RI'};
+const DEMO_CANDIDATES=[
+  {id:'d1',fileName:'sarah_chen_fullstack.pdf',name:'Sarah Chen',status:'done',colorIdx:0,recommendation:'Shortlist',skillsScore:92,experienceScore:88,educationScore:85,overallScore:90,summary:'Highly qualified full-stack engineer with 6 years of React and Node.js experience. Demonstrated strong leadership at two startups.',strengths:['React/TypeScript expert','Led team of 5 engineers','Open source contributor'],gaps:['No AWS certification','Limited mobile experience']},
+  {id:'d2',fileName:'james_okafor_backend.pdf',name:'James Okafor',status:'done',colorIdx:1,recommendation:'Maybe',skillsScore:75,experienceScore:70,educationScore:90,overallScore:74,summary:'Strong computer science foundation with solid Python and Django skills. Less hands-on leadership experience than ideal.',strengths:['PhD in Computer Science','Python expertise','Published researcher'],gaps:['Limited production scale','No team management']},
+  {id:'d3',fileName:'priya_sharma_devops.pdf',name:'Priya Sharma',status:'done',colorIdx:2,recommendation:'Shortlist',skillsScore:88,experienceScore:82,educationScore:78,overallScore:85,summary:'Experienced DevOps engineer with Kubernetes and CI/CD expertise. Reduced deployment times by 60% at previous role.',strengths:['Kubernetes certified','CI/CD automation expert','Cost optimization'],gaps:['Less frontend knowledge','New to microservices']},
+  {id:'d4',fileName:'mike_torres_junior.pdf',name:'Mike Torres',status:'done',colorIdx:3,recommendation:'Reject',skillsScore:45,experienceScore:30,educationScore:65,overallScore:42,summary:'Recent graduate with limited professional experience. Skills gap is significant for a senior role.',strengths:['Enthusiastic learner','Strong algorithm basics'],gaps:['No production experience','Missing core tech stack']}
+];
+
+// PAGE NAVIGATION
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function togglePass(id){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password'}
+function checkStrength(val){
+  const segs=[1,2,3,4].map(i=>document.getElementById('s'+i));
+  const lbl=document.getElementById('strength-label');
+  let s=0;if(val.length>=8)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;
+  const colors=['#ef4444','#f59e0b','#3b82f6','#10b981'],labels=['Too short','Weak','Good','Strong'];
+  segs.forEach((seg,i)=>seg.style.background=i<s?colors[s-1]:'var(--border)');
+  lbl.textContent=val.length?labels[Math.max(0,s-1)]:'Enter a password';
+  lbl.style.color=val.length?colors[Math.max(0,s-1)]:'var(--text3)';
+}
+
+// MODAL SYSTEM
+function openModal(id){
+  document.getElementById('user-dropdown').classList.remove('open');
+  if(id==='modal-account'&&currentUser){
+    document.getElementById('acc-name').value=currentUser.name||'';
+    document.getElementById('acc-email').value=currentUser.email||'';
+    document.getElementById('acc-company').value=currentUser.company||'';
+    document.getElementById('acc-pass').value='';
+  }
+  if(id==='modal-apikey') document.getElementById('api-key-input').value=apiKey;
+  if(id==='modal-team'&&currentUser){
+    document.getElementById('team-own-avatar').textContent=currentUser.initials;
+    document.getElementById('team-own-name').textContent=currentUser.name;
+    document.getElementById('team-own-email').textContent=currentUser.email;
+  }
+  document.getElementById(id).classList.add('visible');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('visible');
+  // hide success msgs
+  document.querySelectorAll('#'+id+' .modal-success').forEach(el=>el.classList.remove('show'));
+}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('visible')}));
+
+// MODAL ACTIONS
+function saveApiKey(){
+  const key=document.getElementById('api-key-input').value.trim();
+  if(!key){alert('Please enter a valid API key.');return;}
+  apiKey=key;
+  const banner=document.getElementById('demo-banner');
+  if(banner)banner.style.display='none';
+  updateAnalyzeBtn();
+  const s=document.getElementById('apikey-success');s.classList.add('show');
+  setTimeout(()=>closeModal('modal-apikey'),1800);
+}
+function saveAccount(){
+  const name=document.getElementById('acc-name').value.trim();
+  const email=document.getElementById('acc-email').value.trim();
+  const company=document.getElementById('acc-company').value.trim();
+  if(!name||!email){alert('Name and email are required.');return;}
+  currentUser.name=name;currentUser.email=email;currentUser.company=company;
+  currentUser.initials=name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('user-avatar-btn').textContent=currentUser.initials;
+  document.getElementById('dd-name').textContent=name;
+  document.getElementById('dd-email').textContent=email;
+  const s=document.getElementById('account-success');s.classList.add('show');
+  setTimeout(()=>closeModal('modal-account'),1800);
+}
+function inviteMember(){
+  const email=document.getElementById('invite-email').value.trim();
+  if(!email||!email.includes('@')){alert('Please enter a valid email address.');return;}
+  const list=document.getElementById('team-list');
+  const initials=email.substring(0,2).toUpperCase();
+  const div=document.createElement('div');
+  div.className='team-member';div.style.animation='fadeIn .3s ease';
+  div.innerHTML=`<div class="team-avatar">${initials}</div><div class="team-info"><div class="team-name">${email}</div><div class="team-role">Invitation sent</div></div><span class="team-badge" style="color:#fbbf24;border-color:#92400e;background:#451a03">Pending</span>`;
+  list.appendChild(div);
+  document.getElementById('invite-email').value='';
+}
+
+// AUTH
+function loadApp(user,withDemo){
+  currentUser=user;
+  document.getElementById('user-avatar-btn').textContent=user.initials;
+  document.getElementById('dd-name').textContent=user.name;
+  document.getElementById('dd-email').textContent=user.email;
+  if(withDemo){
+    candidates=DEMO_CANDIDATES.map(c=>({...c}));
+    files=DEMO_CANDIDATES.map(c=>({name:c.fileName,status:'done',id:c.id}));
+    document.getElementById('jd-input').value='Senior Full Stack Engineer — 5+ years React/Node.js, team leadership, cloud experience preferred. Competitive compensation.';
+  }else{candidates=[];files=[];document.getElementById('jd-input').value='';}
+  renderFileList();renderCandidates();updateStats();updateAnalyzeBtn();showPage('page-app');
+}
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const err=document.getElementById('login-error');
+  if(email===DEMO_USER.email&&pass===DEMO_USER.password){err.classList.remove('show');loadApp(DEMO_USER,true);}
+  else{err.classList.add('show');}
+}
+function doSignup(){
+  const first=document.getElementById('su-first').value.trim(),last=document.getElementById('su-last').value.trim();
+  const email=document.getElementById('su-email').value.trim(),company=document.getElementById('su-company').value.trim();
+  const pass=document.getElementById('su-pass').value;
+  const err=document.getElementById('signup-error');
+  if(!first||!last||!email||!company||pass.length<8){
+    err.textContent=pass.length<8&&pass?'Password must be at least 8 characters.':'Please fill in all required fields.';
+    err.classList.add('show');return;
+  }
+  err.classList.remove('show');
+  loadApp({email,name:first+' '+last,company,initials:(first[0]+last[0]).toUpperCase()},false);
+}
+function doForgot(){
+  if(!document.getElementById('forgot-email').value.trim())return;
+  const s=document.getElementById('forgot-success');s.classList.add('show');
+  setTimeout(()=>{s.classList.remove('show');showPage('page-login')},2500);
+}
+function oauthLogin(provider){if(provider==='Google')showGooglePicker();else showMicrosoftPicker();}
+function closeGooglePicker(){const el=document.getElementById('google-picker');if(el)el.remove();}
+function showGooglePicker(){
+  closeGooglePicker();
+  const d=document.createElement('div');d.id='google-picker';
+  d.style.cssText='position:fixed;inset:0;background:#00000099;z-index:9999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML=`<div style="background:#fff;border-radius:16px;width:380px;max-width:92%;box-shadow:0 20px 60px #0004;overflow:hidden;font-family:Roboto,sans-serif">
+    <div style="padding:20px 24px 16px;text-align:center;border-bottom:1px solid #e8eaed">
+      <div style="font-size:15px;font-weight:500;color:#202124;margin-bottom:4px">Sign in with Google</div>
+      <div style="font-size:12px;color:#5f6368">Choose an account to continue to Resume IQ</div>
+    </div>
+    <div style="padding:8px">
+      <div onclick="selectGAccount('recruiter@gmail.com','Recruiter User','#EA4335')" style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#f1f3f4'" onmouseout="this.style.background='none'">
+        <div style="width:36px;height:36px;border-radius:50%;background:#EA4335;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0">R</div>
+        <div><div style="font-size:14px;font-weight:500;color:#202124">Recruiter User</div><div style="font-size:12px;color:#5f6368">recruiter@gmail.com</div></div>
+        <div style="margin-left:auto;color:#5f6368">›</div>
+      </div>
+      <div onclick="selectGAccount('hr@company.com','HR Manager','#185FA5')" style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#f1f3f4'" onmouseout="this.style.background='none'">
+        <div style="width:36px;height:36px;border-radius:50%;background:#185FA5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0">H</div>
+        <div><div style="font-size:14px;font-weight:500;color:#202124">HR Manager</div><div style="font-size:12px;color:#5f6368">hr@company.com</div></div>
+        <div style="margin-left:auto;color:#5f6368">›</div>
+      </div>
+      <div onclick="showAddGoogle()" style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:8px;cursor:pointer" onmouseover="this.style.background='#f1f3f4'" onmouseout="this.style.background='none'">
+        <div style="width:36px;height:36px;border-radius:50%;background:#f1f3f4;color:#5f6368;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">+</div>
+        <div style="font-size:14px;color:#202124">Use another account</div>
+      </div>
+    </div>
+    <div style="padding:12px 24px 20px;border-top:1px solid #e8eaed;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:11px;color:#5f6368"><a href="#" style="color:#1a73e8">Privacy</a> · <a href="#" style="color:#1a73e8">Terms</a></span>
+      <button onclick="closeGooglePicker()" style="padding:7px 18px;background:none;border:1px solid #dadce0;border-radius:6px;color:#5f6368;font-size:13px;cursor:pointer;font-family:inherit">Cancel</button>
+    </div>
+  </div>`;
+  d.addEventListener('click',e=>{if(e.target===d)closeGooglePicker();});
+  document.body.appendChild(d);
+}
+function showAddGoogle(){
+  closeGooglePicker();
+  const d=document.createElement('div');d.id='google-picker';
+  d.style.cssText='position:fixed;inset:0;background:#00000099;z-index:9999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML=`<div style="background:#fff;border-radius:16px;width:360px;max-width:92%;padding:24px;box-shadow:0 20px 60px #0004;font-family:Roboto,sans-serif">
+    <div style="font-size:16px;font-weight:500;color:#202124;margin-bottom:16px">Sign in with Google</div>
+    <input id="g-email" type="email" placeholder="Email or phone" style="width:100%;padding:10px 12px;border:1.5px solid #1a73e8;border-radius:8px;font-size:14px;outline:none;margin-bottom:16px;font-family:inherit">
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button onclick="closeGooglePicker()" style="padding:9px 20px;background:none;border:none;color:#1a73e8;font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+      <button onclick="submitAddGoogle()" style="padding:9px 20px;background:#1a73e8;border:none;color:#fff;font-size:14px;cursor:pointer;border-radius:6px;font-weight:500;font-family:inherit">Next</button>
+    </div>
+  </div>`;
+  d.addEventListener('click',e=>{if(e.target===d)closeGooglePicker();});
+  document.body.appendChild(d);
+}
+function submitAddGoogle(){
+  const email=document.getElementById('g-email').value.trim();
+  if(!email||!email.includes('@')){alert('Please enter a valid email');return;}
+  const name=email.split('@')[0].replace(/[._]/g,' ').replace(/\w/g,c=>c.toUpperCase());
+  selectGAccount(email,name,'#4285F4');
+}
+function selectGAccount(email,name,color){
+  closeGooglePicker();
+  const initials=name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const d=document.createElement('div');d.id='google-picker';
+  d.style.cssText='position:fixed;inset:0;background:#00000099;z-index:9999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML=`<div style="background:#fff;border-radius:16px;width:380px;max-width:92%;box-shadow:0 20px 60px #0004;overflow:hidden;font-family:Roboto,sans-serif">
+    <div style="padding:24px;text-align:center;border-bottom:1px solid #e8eaed">
+      <div style="width:52px;height:52px;border-radius:50%;background:${color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;margin:0 auto 10px">${initials}</div>
+      <div style="font-size:15px;font-weight:500;color:#202124">${name}</div>
+      <div style="font-size:13px;color:#5f6368">${email}</div>
+    </div>
+    <div style="padding:16px 24px">
+      <div style="font-size:14px;font-weight:500;color:#202124;margin-bottom:10px">Resume IQ wants access to your Google Account</div>
+      <div style="background:#f8f9fa;border-radius:8px;padding:12px">
+        <div style="display:flex;gap:10px;margin-bottom:8px;font-size:13px;color:#202124;align-items:center"><span style="color:#1a73e8">✉</span> View your email address</div>
+        <div style="display:flex;gap:10px;font-size:13px;color:#202124;align-items:center"><span style="color:#1a73e8">👤</span> See your personal info</div>
+      </div>
+      <div style="font-size:11px;color:#5f6368;margin-top:10px">Make sure you trust Resume IQ before continuing.</div>
+    </div>
+    <div style="padding:12px 24px 20px;display:flex;justify-content:flex-end;gap:10px">
+      <button onclick="closeGooglePicker()" style="padding:9px 20px;background:none;border:none;color:#1a73e8;font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+      <button onclick="completeGoogle('${email}','${name}','${initials}')" style="padding:9px 20px;background:#1a73e8;border:none;color:#fff;font-size:14px;cursor:pointer;border-radius:6px;font-weight:500;font-family:inherit">Continue</button>
+    </div>
+  </div>`;
+  d.addEventListener('click',e=>{if(e.target===d)closeGooglePicker();});
+  document.body.appendChild(d);
+}
+function completeGoogle(email,name,initials){closeGooglePicker();loadApp({email,name,company:'Google Account',initials},false);}
+function showMicrosoftPicker(){
+  const d=document.createElement('div');d.id='ms-picker';
+  d.style.cssText='position:fixed;inset:0;background:#00000099;z-index:9999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML=`<div style="background:#fff;border-radius:4px;width:380px;max-width:92%;box-shadow:0 20px 60px #0004;overflow:hidden;font-family:Segoe UI,sans-serif">
+    <div style="background:#0067b8;padding:14px 24px"><span style="color:#fff;font-size:15px;font-weight:600">Microsoft</span></div>
+    <div style="padding:24px">
+      <div style="font-size:20px;color:#1b1b1b;font-weight:300;margin-bottom:20px">Sign in</div>
+      <input id="ms-email" type="email" placeholder="Email, phone, or Skype" style="width:100%;padding:8px 0;border:none;border-bottom:2px solid #0067b8;font-size:14px;outline:none;margin-bottom:20px;font-family:inherit">
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button onclick="document.getElementById('ms-picker').remove()" style="padding:8px 20px;background:none;border:1px solid #8d8d8d;color:#1b1b1b;font-size:13px;cursor:pointer;font-family:inherit">Back</button>
+        <button onclick="completeMicrosoft()" style="padding:8px 20px;background:#0067b8;border:none;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Next</button>
+      </div>
+    </div>
+  </div>`;
+  d.addEventListener('click',e=>{if(e.target===d)d.remove();});
+  document.body.appendChild(d);
+}
+function completeMicrosoft(){
+  const email=document.getElementById('ms-email')?.value.trim();
+  if(!email||!email.includes('@')){alert('Please enter a valid email');return;}
+  document.getElementById('ms-picker')?.remove();
+  const name=email.split('@')[0].replace(/[._]/g,' ').replace(/\w/g,c=>c.toUpperCase());
+  const initials=name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  loadApp({email,name,company:'Microsoft Account',initials},false);
+}
+function doLogout(){
+  document.getElementById('user-dropdown').classList.remove('open');
+  currentUser=null;files=[];candidates=[];selectedIds.clear();
+  document.getElementById('login-email').value='';document.getElementById('login-pass').value='';
+  document.getElementById('login-error').classList.remove('show');
+  showPage('page-login');
+}
+function toggleDropdown(){document.getElementById('user-dropdown').classList.toggle('open')}
+document.addEventListener('click',e=>{if(!e.target.closest('.user-menu'))document.getElementById('user-dropdown').classList.remove('open')});
+
+// FILE HANDLING
+const dropZone=document.getElementById('drop-zone');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.style.borderColor='var(--blue)'});
+dropZone.addEventListener('dragleave',()=>dropZone.style.borderColor='');
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.style.borderColor='';handleFiles(e.dataTransfer.files)});
+document.getElementById('file-input').addEventListener('change',e=>handleFiles(e.target.files));
+function handleFiles(newFiles){
+  Array.from(newFiles).forEach(f=>{
+    if(!files.find(x=>x.name===f.name)){
+      const id='f'+Date.now()+Math.random();
+      files.push({name:f.name,file:f,status:'pending',id});
+      candidates.push({id,fileName:f.name,name:f.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' '),status:'pending',colorIdx:candidates.length});
+    }
+  });
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('candidates-grid').style.display='grid';
+  renderFileList();renderCandidates();updateAnalyzeBtn();
+}
+function removeFile(id){
+  files=files.filter(f=>f.id!==id);candidates=candidates.filter(c=>c.id!==id);
+  renderFileList();renderCandidates();updateStats();updateAnalyzeBtn();
+  if(candidates.length===0){document.getElementById('empty-state').style.display='flex';document.getElementById('candidates-grid').style.display='none';}
+}
+function renderFileList(){
+  document.getElementById('file-list').innerHTML=files.map(f=>`
+    <div class="file-item">
+      <div class="file-dot ${f.status==='done'?'done':f.status==='loading'?'loading':f.status==='error'?'error':''}"></div>
+      <span class="file-name" title="${f.name}">${f.name}</span>
+      <span class="file-remove" onclick="removeFile('${f.id}')">✕</span>
+    </div>`).join('');
+}
+function updateAnalyzeBtn(){
+  const btn=document.getElementById('analyze-btn');
+  const p=files.filter(f=>f.status==='pending').length;
+  btn.disabled=p===0;
+  btn.textContent=p?`Analyze ${p} Resume${p>1?'s':''}`:'Analyze Resumes';
+}
+
+// AI ANALYSIS
+async function analyzeAll(){
+  const jd=document.getElementById('jd-input').value.trim();
+  const btn=document.getElementById('analyze-btn');btn.disabled=true;btn.textContent='Analyzing…';
+  for(let f of files.filter(f=>f.status==='pending')){
+    const cand=candidates.find(c=>c.id===f.id);
+    f.status='loading';if(cand)cand.status='loading';
+    renderFileList();renderCandidates();
+    try{
+      const text=await extractText(f.file);
+      let res;
+      if(!apiKey){
+        await new Promise(r=>setTimeout(r,1800));
+        res=generateDemoResult(f.name,jd,extractNameFromText(text,f.name));
+      } else {
+        res=await callClaude(text,jd,f.name);
+      }
+      Object.assign(cand,res,{status:'done'});f.status='done';
+    }catch(e){
+      console.error(e);
+      if(cand){cand.status='error';cand.recommendation='Error';}
+      f.status='error';
+      if(apiKey) alert('Error: '+(e.message||'Unknown')+'\n\nCheck API key and credits at console.anthropic.com');
+    }
+    renderCandidates();renderFileList();updateStats();
+  }
+  updateAnalyzeBtn();
+}
+async function extractText(file){
+  return new Promise(res=>{
+    const r=new FileReader();
+    r.onload=e=>res((e.target.result||'').replace(/[^\x20-\x7E\n\r]/g,' ').replace(/\s+/g,' ').trim().substring(0,3000));
+    r.onerror=()=>res('');r.readAsText(file);
+  });
+}
+async function callClaude(resumeText,jd,fileName){
+  const hasJD=jd&&jd.trim().length>20;
+  const prompt=`You are an EXTREMELY STRICT recruitment AI. REJECT candidates who do not match the role.
+
+FIELD MISMATCH RULE — MOST IMPORTANT:
+- If candidate is from a COMPLETELY DIFFERENT field than the job → skills_score = 0 to 15 → recommendation = Reject
+- Example: Zoology/Biology graduate applying for AI Engineer role → Reject
+- Example: Marketing person applying for Software Developer role → Reject  
+- Example: Teacher applying for Data Scientist role → Reject
+- NO exceptions for completely wrong field candidates
+
+STRICT SCORING RULES:
+- skills_score 0-15   = Completely wrong field — no relevant skills at all
+- skills_score 16-39  = Wrong field — very few relevant skills
+- skills_score 40-59  = Some skills match but missing many
+- skills_score 60-74  = Good skills match — most requirements met
+- skills_score 75-100 = Excellent skills match — almost all requirements met
+
+RECOMMENDATION — STRICT RULES NO EXCEPTIONS:
+- If skills_score < 40 → ALWAYS Reject
+- If experience_score < 35 → ALWAYS Reject
+- If overall_score < 50 → ALWAYS Reject
+- If overall_score 50-74 AND skills >= 40 AND experience >= 35 → Maybe
+- If overall_score >= 75 AND skills >= 60 AND experience >= 60 → Shortlist
+
+${hasJD?`JOB DESCRIPTION — screen resume VERY STRICTLY against this:\n${jd}`:`No JD provided. Use general professional quality scoring.`}
+
+RESUME:
+${resumeText}
+
+Analyze strictly. Return ONLY this JSON no markdown:
+{"name":"full name from resume","skills_score":0,"experience_score":0,"education_score":0,"overall_score":0,"recommendation":"Reject","summary":"2 honest sentences about match or mismatch with this specific role","strengths":["specific requirement from JD found in resume"],"gaps":["specific required skill missing from resume","another gap","another gap"]}`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
+    });
+    if(!resp.ok){const e=await resp.json();throw new Error(e.error?.message||'API error '+resp.status);}
+    const data=await resp.json();
+    const txt=data.content.map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+    const p=JSON.parse(txt);
+    const skills=Math.round(p.skills_score||0);
+    const exp=Math.round(p.experience_score||0);
+    const edu=Math.round(p.education_score||0);
+    const overall=Math.round(p.overall_score||0);
+    // Strict enforcement — override AI if it was too lenient
+    let rec;
+    if(skills<40||exp<35||overall<50) rec='Reject';
+    else if(overall>=75&&skills>=60&&exp>=60) rec='Shortlist';
+    else rec='Maybe';
+    return{name:p.name||fileName,skillsScore:skills,experienceScore:exp,educationScore:edu,overallScore:overall,recommendation:rec,summary:p.summary||'',strengths:p.strengths||[],gaps:p.gaps||[]};
+  }catch(e){throw new Error(e.message||'Analysis failed. Check API key and credits.');}
+}
+
+function getInitials(n){return(n||'').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?'}
+function getBarColor(s){return s>=75?'#10b981':s>=50?'#fbbf24':'#ef4444'}
+function renderCandidates(){
+  const filter=document.getElementById('filter-select').value;
+  const grid=document.getElementById('candidates-grid');
+  const filtered=candidates.filter(c=>filter==='all'||c.recommendation===filter);
+  if(candidates.length===0){document.getElementById('empty-state').style.display='flex';grid.style.display='none';return;}
+  document.getElementById('empty-state').style.display='none';grid.style.display='grid';
+  grid.innerHTML=filtered.map(c=>{
+    const col=COLORS[c.colorIdx%COLORS.length];
+    if(c.status==='loading'||c.status==='pending')return`<div class="cand-card"><div class="cand-header"><div class="cand-avatar" style="background:${col[0]};color:${col[1]}">…</div><div class="cand-info"><div class="skeleton skel-name"></div><div style="font-size:10px;color:var(--text3)">${c.fileName}</div></div></div><div class="skeleton skel-badge"></div><div class="skeleton skel-bar"></div><div class="skeleton skel-bar"></div><div class="skeleton skel-bar"></div></div>`;
+    const rec=c.recommendation||'Maybe',rc=rec==='Shortlist'?'shortlist':rec==='Maybe'?'maybe':'reject',ri=rec==='Shortlist'?'✓':rec==='Maybe'?'~':'✗';
+    return`<div class="cand-card ${selectedIds.has(c.id)?'selected':''} ${c.expanded?'expanded':''}" id="card-${c.id}" onclick="toggleExpand('${c.id}',event)">
+      <div class="cand-header"><div class="cand-avatar" style="background:${col[0]};color:${col[1]}">${getInitials(c.name)}</div><div class="cand-info"><div class="cand-name">${c.name}</div><div class="cand-file">${c.fileName}</div></div><input type="checkbox" class="cand-check" ${selectedIds.has(c.id)?'checked':''} onclick="toggleSelect('${c.id}',event)"></div>
+      <div class="rec-badge ${rc}">${ri} ${rec}</div>
+      <div class="scores">${[['Skills',c.skillsScore||0],['Experience',c.experienceScore||0],['Education',c.educationScore||0]].map(([l,v])=>`<div class="score-row"><span class="score-label">${l}</span><div class="score-bar-wrap"><div class="score-bar" style="width:${v}%;background:${getBarColor(v)}"></div></div><span class="score-val">${v}</span></div>`).join('')}<div class="score-row" style="margin-top:4px"><span class="score-label" style="font-weight:600;color:var(--text)">Overall</span><div class="score-bar-wrap"><div class="score-bar" style="width:${c.overallScore||0}%;background:${getBarColor(c.overallScore||0)};height:6px"></div></div><span class="score-val" style="font-weight:700;color:${getBarColor(c.overallScore||0)}">${c.overallScore||0}</span></div></div>
+      <div class="cand-detail">${c.summary?`<div class="detail-title">Summary</div><div class="detail-text">${c.summary}</div>`:''} ${c.strengths?.length?`<div class="detail-title">Strengths</div><div class="detail-tags">${c.strengths.map(s=>`<span class="tag strength">${s}</span>`).join('')}</div>`:''} ${c.gaps?.length?`<div class="detail-title">Gaps</div><div class="detail-tags">${c.gaps.map(g=>`<span class="tag gap">${g}</span>`).join('')}</div>`:''}</div>
+    </div>`;
+  }).join('');
+  updateSelBar();
+}
+function toggleExpand(id,e){if(e.target.type==='checkbox')return;const c=candidates.find(x=>x.id===id);if(c)c.expanded=!c.expanded;document.getElementById('card-'+id)?.classList.toggle('expanded')}
+function toggleSelect(id,e){e.stopPropagation();selectedIds.has(id)?selectedIds.delete(id):selectedIds.add(id);renderCandidates()}
+function selectAllShortlisted(){candidates.filter(c=>c.recommendation==='Shortlist').forEach(c=>selectedIds.add(c.id));renderCandidates()}
+function clearSelection(){selectedIds.clear();renderCandidates()}
+function updateSelBar(){const n=selectedIds.size;const bar=document.getElementById('sel-bar');n>0?(bar.classList.add('visible'),document.getElementById('sel-count-text').textContent=n+' candidate'+(n>1?'s':'')+' selected'):bar.classList.remove('visible')}
+function updateStats(){const done=candidates.filter(c=>c.status==='done');document.getElementById('stat-total').textContent=candidates.length;document.getElementById('stat-shortlist').textContent=done.filter(c=>c.recommendation==='Shortlist').length;document.getElementById('stat-maybe').textContent=done.filter(c=>c.recommendation==='Maybe').length;document.getElementById('stat-reject').textContent=done.filter(c=>c.recommendation==='Reject').length;}
+function extractNameFromText(text,fileName){
+  const lines=text.split('\n').slice(0,8).map(l=>l.trim()).filter(l=>l.length>1);
+  for(let line of lines.slice(0,4)){
+    const clean=line.replace(/[^a-zA-Z\s]/g,'').trim();
+    const words=clean.split(/\s+/);
+    if(words.length>=2&&words.length<=4){
+      const allCap=words.every(w=>w.length>0&&w[0]===w[0].toUpperCase()&&!/^[a-z]/.test(w));
+      const noNum=!/\d/.test(clean);
+      const short=clean.length<40;
+      const notKw=!/(engineer|developer|manager|analyst|resume|profile|summary|experience|education|skills|email|phone|address|linkedin|university|college|zoology|biology|degree|bachelor)/i.test(clean);
+      if(allCap&&noNum&&short&&notKw) return clean;
+    }
+  }
+  return fileName.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()).replace(/\d+/g,'').trim()||'Candidate';
+}
+function generateDemoResult(fileName,jd,extractedName){
+  const name=extractedName||'Candidate';
+  const seed=fileName.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const jdLower=(jd||'').toLowerCase();
+  const nameLower=(extractedName||'').toLowerCase();
+  const techJD=['python','machine learning','ai','ml','deep learning','nlp','llm','neural','tensorflow','data science','software','programming','java','react','developer','engineer','sql','cloud'].some(k=>jdLower.includes(k));
+  const nonTechResume=['marketing','sales','teacher','accountant','finance','nurse','doctor','zoology','biology','arts','commerce','media','journalism','zoologist'].some(k=>nameLower.includes(k)||fileName.toLowerCase().includes(k));
+  let ranges;
+  if(techJD&&nonTechResume){
+    ranges=[{s:10,e:12,ed:42},{s:8,e:15,ed:45},{s:15,e:10,ed:38}];
+  } else {
+    ranges=[{s:88,e:85,ed:82},{s:70,e:65,ed:72},{s:92,e:90,ed:88},{s:48,e:52,ed:55},{s:35,e:30,ed:58},{s:22,e:28,ed:42}];
+  }
+  const r=ranges[seed%ranges.length];
+  const skills=Math.max(0,Math.min(100,r.s+(seed%7)-3));
+  const exp=Math.max(0,Math.min(100,r.e+(seed%5)-2));
+  const edu=Math.max(0,Math.min(100,r.ed+(seed%9)-4));
+  const overall=Math.floor((skills+exp+edu)/3);
+  let rec=skills<40||exp<35||overall<50?'Reject':overall>=75&&skills>=60&&exp>=60?'Shortlist':'Maybe';
+  const allStrengths=['Relevant educational background','Analytical thinking skills','Communication skills demonstrated','Problem solving experience','Leadership qualities shown'];
+  const allGaps=['No relevant technical skills found','Missing required programming experience','No AI/ML background','Insufficient domain knowledge','Required certifications absent','Wrong field of expertise'];
+  return{
+    name,skillsScore:skills,experienceScore:exp,educationScore:edu,overallScore:overall,recommendation:rec,
+    summary:overall>=75?`Candidate shows strong alignment with the job requirements scoring ${overall}/100. Recommended for further evaluation.`:overall>=50?`Candidate partially matches the requirements with a score of ${overall}/100. Some key skills are missing.`:`Candidate does not match the job requirements with a score of ${overall}/100. The resume is from a different field and lacks required skills.`,
+    strengths:allStrengths.sort(()=>Math.random()-.5).slice(0,2),
+    gaps:allGaps.sort(()=>Math.random()-.5).slice(0,3)
+  };
+}
+function toggleBilling(){
+  const dot=document.getElementById('bl-dot');
+  const ml=document.getElementById('bl-monthly');
+  const al=document.getElementById('bl-annual');
+  const amt=document.getElementById('pro-amt');
+  if(!dot)return;
+  const isAnnual=dot.style.left==='3px';
+  if(isAnnual){dot.style.left='20px';if(ml){ml.style.color='#fff';ml.style.fontWeight='500';}if(al){al.style.color='var(--text3)';al.style.fontWeight='400';}if(amt)amt.textContent='$29';}
+  else{dot.style.left='3px';if(ml){ml.style.color='var(--text3)';ml.style.fontWeight='400';}if(al){al.style.color='#fff';al.style.fontWeight='500';}if(amt)amt.textContent='$23';}
+}
+function toCSV(rows){return rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n')}
+function downloadCSV(csv,name){const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=name;a.click()}
+function exportCSV(){const done=candidates.filter(c=>c.status==='done');if(!done.length)return;downloadCSV(toCSV([['Name','File','Skills','Experience','Education','Overall','Recommendation','Summary','Strengths','Gaps'],...done.map(c=>[c.name,c.fileName,c.skillsScore,c.experienceScore,c.educationScore,c.overallScore,c.recommendation,c.summary,(c.strengths||[]).join('; '),(c.gaps||[]).join('; ')])]),'resume-iq-results.csv')}
+function exportSelected(){const sel=candidates.filter(c=>selectedIds.has(c.id)&&c.status==='done');if(!sel.length)return;downloadCSV(toCSV([['Name','File','Overall','Recommendation','Summary'],...sel.map(c=>[c.name,c.fileName,c.overallScore,c.recommendation,c.summary])]),'resume-iq-shortlist.csv')}
+</script>
+</body>
+</html>
